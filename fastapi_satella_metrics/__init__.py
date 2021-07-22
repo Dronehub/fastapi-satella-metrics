@@ -1,0 +1,55 @@
+import typing as tp
+from collections import namedtuple
+
+from starlette.requests import Request
+from starlette.responses import Response
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from satella.time import measure
+from satella.instrumentation.metrics import getMetric, Metric
+
+__version__ = "0.0.1"
+
+__all__ = ["SatellaMetricsMiddleware", "__version__"]
+
+MetricsContainer = namedtuple(
+    "MetricsContainer", ["summary_metric", "histogram_metric", "response_codes_metric"]
+)
+
+
+class SatellaMetricsMiddleware(BaseHTTPMiddleware):
+    def __init__(
+        self,
+        app,
+        summary_metric: tp.Optional[Metric] = None,
+        histogram_metric: tp.Optional[Metric] = None,
+        response_codes_metric: tp.Optional[Metric] = None,
+    ):
+
+        super().__init__(app)
+        self.app = app
+        self.app.metrics = MetricsContainer(
+            summary_metric
+            or getMetric(
+                "requests_summary", "summary", quantiles=[0.2, 0.5, 0.9, 0.95, 0.99]
+            ),
+            histogram_metric or getMetric("requests_histogram", "histogram"),
+            response_codes_metric or getMetric("requests_response_codes", "counter"),
+        )
+
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
+        time_measure = measure()
+
+        response = await call_next(request)
+
+        time_measure.stop()
+        elapsed = time_measure()
+        endpoint = str(request.url)
+        self.app.metrics.summary_metric.runtime(elapsed, endpoint=endpoint)
+        self.app.metrics.histogram_metric.runtime(elapsed, endpoint=endpoint)
+        self.app.metrics.response_codes_metric.runtime(
+            +1, response_code=response.status_code
+        )
+
+        return response
