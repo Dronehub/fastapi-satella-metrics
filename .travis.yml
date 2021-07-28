@@ -1,8 +1,6 @@
 language: python
 stages:
   - name: test
-  - name: deploy
-    if: tag is present
 cache: pip
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -28,11 +26,3 @@ jobs:
       python: "3.9"
       script:
         - pytest --cov=./ --cov-report=xml
-    - stage: deploy
-      python: "3.8"
-      script:
-        - pip install twine
-        - python setup.py bdist_wheel sdist
-        - twine upload -u $PYPI_USER -p $PYPI_PWD dist/*
-      after_script:
-        - echo "Done"
