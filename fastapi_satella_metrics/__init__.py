@@ -7,7 +7,7 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from satella.time import measure
 from satella.instrumentation.metrics import getMetric, Metric
 
-__version__ = "0.0.1"
+__version__ = "2.0.0"
 
 __all__ = ["SatellaMetricsMiddleware", "__version__"]
 
