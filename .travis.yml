@@ -12,17 +12,13 @@ after_script:
   - coverage xml
   - coverage report
   - ./cc-test-reporter after-build -t coverage.py --exit-code ${TRAVIS_TEST_RESULT}
+script:
+  - pytest --cov=./ --cov-report=xml
 jobs:
   include:
     - stage: test
       python: "3.8"
-      script:
-        - pytest --cov=./ --cov-report=xml
     - stage: test
       python: "3.7"
-      script:
-        - pytest --cov=./ --cov-report=xml
     - stage: test
       python: "3.9"
-      script:
-        - pytest --cov=./ --cov-report=xml

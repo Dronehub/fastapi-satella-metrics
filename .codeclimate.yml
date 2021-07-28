@@ -13,7 +13,6 @@ engines:
     enabled: true
 exclude_paths:
   - tests/**
-  - docs/**
   - setup.py
 ratings:
   paths:
