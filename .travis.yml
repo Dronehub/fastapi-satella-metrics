@@ -9,7 +9,7 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
   - pip install -r requirements.txt
-  - pip install pytest coverage pytest-cov
+  - pip install -r tests/requirements.txt
 after_script:
   - coverage xml
   - coverage report
