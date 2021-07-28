@@ -1,0 +1,53 @@
+language: python
+stages:
+  - name: test
+  - name: deploy
+    if: tag is present
+cache: pip
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+  - pip install -r requirements.txt
+  - pip install pytest coverage pytest-cov
+after_script:
+  - coverage xml
+  - coverage report
+  - ./cc-test-reporter after-build -t coverage.py --exit-code ${TRAVIS_TEST_RESULT}
+jobs:
+  include:
+    - stage: test
+      python: "pypy3.5"
+      script:
+        - pytest --cov=./ --cov-report=xml
+      after_script:
+        - echo "Do nothing"
+    - stage: test
+      python: "3.8"
+      script:
+        - pytest --cov=./ --cov-report=xml
+    - stage: test
+      python: "3.5"
+      script:
+        - pytest --cov=./ --cov-report=xml
+    - stage: test
+      python: "3.6"
+      script:
+        - pytest --cov=./ --cov-report=xml
+    - stage: test
+      python: "3.7"
+      script:
+        - pytest --cov=./ --cov-report=xml
+    - stage: test
+      python: "3.9"
+      script:
+        - pytest --cov=./ --cov-report=xml
+    - stage: deploy
+      python: "3.8"
+      before_script:
+        - pip install twine
+      script:
+        - python setup.py bdist_wheel sdist
+        - twine upload -u $PYPI_USER -p $PYPI_PWD dist/*
+      after_script:
+        - echo "Done"
