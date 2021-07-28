@@ -7,6 +7,7 @@ fastapi-satella-metrics
 [![PyPI](https://img.shields.io/pypi/pyversions/fastapi-satella-metrics.svg)](https://pypi.python.org/pypi/fastapi-satella-metrics)
 [![PyPI version](https://badge.fury.io/py/fastapi-satella-metrics.svg)](https://badge.fury.io/py/fastapi-satella-metrics)
 [![PyPI](https://img.shields.io/pypi/implementation/fastapi-satella-metrics.svg)](https://pypi.python.org/pypi/fastapi-satella-metrics)
+[![License](https://img.shields.io/pypi/l/fastapi-satella-metrics)](https://github.com/Dronehub/fastapi-satella-metrics)
 
 fastapi-satella-metrics is an application to seamlessly measure your FastAPI
 application using Satella's metrics.
