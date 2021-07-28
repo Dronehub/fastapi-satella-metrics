@@ -10,10 +10,19 @@ from satella.instrumentation.metrics.exporters import (
 logger = logging.getLogger(__name__)
 
 
+__all__ = ['PrometheusExporter']
+
+
 def PrometheusExporter(
     extra_labels: tp.Optional[dict] = None, url: str = "/metrics"
 ) -> APIRouter:
+    """
+    Return a router that exports metrics
 
+    :param extra_labels: extra labels to attach to every metric collected
+    :param url: custom URL to use. /metrics is the default one
+    :return: an APIRouter, to be added via :code:`app.include_router`
+    """
     labels = extra_labels or {}
 
     router = APIRouter()

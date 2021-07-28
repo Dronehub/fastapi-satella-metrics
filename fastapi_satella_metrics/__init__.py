@@ -1,11 +1,13 @@
 import typing as tp
 from collections import namedtuple
 
+from satella.instrumentation.metrics.metric_types import SummaryMetric, HistogramMetric, \
+    CounterMetric
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from satella.time import measure
-from satella.instrumentation.metrics import getMetric, Metric
+from satella.instrumentation.metrics import getMetric
 
 __version__ = "2.0.0"
 
@@ -20,9 +22,9 @@ class SatellaMetricsMiddleware(BaseHTTPMiddleware):
     def __init__(
         self,
         app,
-        summary_metric: tp.Optional[Metric] = None,
-        histogram_metric: tp.Optional[Metric] = None,
-        response_codes_metric: tp.Optional[Metric] = None,
+        summary_metric: tp.Optional[SummaryMetric] = None,
+        histogram_metric: tp.Optional[HistogramMetric] = None,
+        response_codes_metric: tp.Optional[CounterMetric] = None,
     ):
 
         super().__init__(app)
