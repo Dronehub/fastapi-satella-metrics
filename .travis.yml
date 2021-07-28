@@ -30,9 +30,8 @@ jobs:
         - pytest --cov=./ --cov-report=xml
     - stage: deploy
       python: "3.8"
-      before_script:
-        - pip install twine
       script:
+        - pip install twine
         - python setup.py bdist_wheel sdist
         - twine upload -u $PYPI_USER -p $PYPI_PWD dist/*
       after_script:
