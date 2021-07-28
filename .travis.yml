@@ -17,21 +17,7 @@ after_script:
 jobs:
   include:
     - stage: test
-      python: "pypy3.5"
-      script:
-        - pytest --cov=./ --cov-report=xml
-      after_script:
-        - echo "Do nothing"
-    - stage: test
       python: "3.8"
-      script:
-        - pytest --cov=./ --cov-report=xml
-    - stage: test
-      python: "3.5"
-      script:
-        - pytest --cov=./ --cov-report=xml
-    - stage: test
-      python: "3.6"
       script:
         - pytest --cov=./ --cov-report=xml
     - stage: test
