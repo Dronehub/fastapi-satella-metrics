@@ -1,0 +1,13 @@
+[run]
+branch=1
+source=
+  fastapi_satella_metrics
+concurrency=thread
+omit=
+  tests/*
+  setup.py
+
+[report]
+include=
+    fastapi_satella_metrics/*
+
