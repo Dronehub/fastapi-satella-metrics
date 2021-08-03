@@ -22,6 +22,7 @@ class SatellaMetricsMiddleware(BaseHTTPMiddleware):
     def __init__(
         self,
         app,
+        exclude_metrics_endpoint: bool = False,
         summary_metric: tp.Optional[SummaryMetric] = None,
         histogram_metric: tp.Optional[HistogramMetric] = None,
         response_codes_metric: tp.Optional[CounterMetric] = None,
@@ -29,6 +30,7 @@ class SatellaMetricsMiddleware(BaseHTTPMiddleware):
 
         super().__init__(app)
         self.app = app
+        self.exclude_metrics_endpoint = exclude_metrics_endpoint
         self.app.metrics = MetricsContainer(
             summary_metric
             or getMetric(
@@ -41,6 +43,10 @@ class SatellaMetricsMiddleware(BaseHTTPMiddleware):
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
+
+        if self.exclude_metrics_endpoint and request.url.path == "/metrics":
+            return await call_next(request)
+
         time_measure = measure()
 
         response = await call_next(request)
