@@ -20,9 +20,27 @@ from fastapi_satella_metrics import SatellaMetricsMiddleware
 app = fastapi.FastAPI()
 app.add_middleware(SatellaMetricsMiddleware)
 ```
+If you want to exclude /metrics endpoint from being metricized:
+```python
+app.add_middleware(SatellaMetricsMiddleware, exclude_metrics_endpoint=True)
+```
+Or to use your metrics:
+```python
+summary_metric = getMetric(
+    "requests_summary", "summary", quantiles=[0.2, 0.5, 0.9, 0.95, 0.99]
+)
+histogram_metric = getMetric("requests_histogram", "histogram")
+response_codes_metric = getMetric("requests_response_codes", "counter")
 
-And to launch a Prometheus exporter use the following snippet:
+app.add_middleware(
+    SatellaMetricsMiddleware,
+    summary_metric=summary_metric,
+    histogram_metric=histogram_metric,
+    response_codes_metric=response_codes_metric,
+)
+```
 
+To launch a Prometheus exporter use the following snippet:
 ```python
 from satella.instrumentation.metrics.exporters import PrometheusHTTPExporterThread
 phet = PrometheusHTTPExporterThread('0.0.0.0', 8080, {'service_name': 'my_service'})
